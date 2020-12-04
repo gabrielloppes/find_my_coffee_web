@@ -1,20 +1,26 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
+// Get all Google Maps API coffee shops in the user region
 import EstablishmentsService from './services/google_list_of_establishments';
 
 function App() {
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
-  const [location, setLocations] = useState([]);
+  const [locations, setLocations] = useState([]);
 
   const { REACT_APP_GOOGLE_API_KEY } = process.env;
 
   // useEffect will trigger setCurrentLocation function
-  // We pass an empty array, so the function will be called just once
+  // Passes an empty array, so the function will be called just once
   useEffect(() => {
     setCurrentLocation();
   }, []);
+
+  async function loadCoffeeShops() {
+    const response = await EstablishmentsService.index(latitude, longitude);
+    setLocations(response.data.results);
+  }
 
   async function setCurrentLocation() {
     await navigator.geolocation.getCurrentPosition(
@@ -29,11 +35,6 @@ function App() {
     );
   }
 
-  async function loadCoffeeShops() {
-    const response = await EstablishmentsService.index(latitude, longitude);
-    setLocations(response.data.results);
-  }
-
   return (
     <Fragment>
       <LoadScript googleMapsApiKey={REACT_APP_GOOGLE_API_KEY}>
@@ -46,10 +47,10 @@ function App() {
             return (
               <Marker
                 key={index}
-                icon={}
+                icon="/images/coffee-pin.png"
                 title={item.name}
                 animation="4"
-                position={{
+                position = {{
                   lat: item.geometry.location.lat,
                   lng: item.geometry.location.lng,
                 }}
@@ -58,7 +59,7 @@ function App() {
           })}
           <Marker
             key="my location"
-            icon={}
+            icon="/images/my-location-pin.png"
             title="seu local"
             animation="2"
             position={{ lat: latitude, lng: longitude }}

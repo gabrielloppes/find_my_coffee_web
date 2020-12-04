@@ -1,8 +1,8 @@
 import Api from './api';
 
-const googleListOfEstablishmentsService = {
+const GoogleListOfEstablishmentsService = {
   index: (latitude, longitude) =>
-    Api.get(`/google_store?latitude=${latitude}&longitude=${longitude}`),
+    Api.get(`/google_stores?latitude=${latitude}&longitude=${longitude}`),
 };
 
-export default googleListOfEstablishmentsService;
+export default GoogleListOfEstablishmentsService;
